@@ -1,0 +1,146 @@
+# -*- coding: utf-8 -*-
+
+from flask import Flask,render_template,request,send_file,redirect,session
+from winmagic import magic
+import time
+import json
+import re
+import requests
+import socket
+import threading
+import urllib3
+import sqlite3
+import func
+import error
+config = json.load(open("config.json"))
+app = Flask(__name__)
+
+
+db = sqlite3.connect(f'{config["DB_NAME"]}.db')
+cur = db.cursor()
+
+cur.execute('CREATE TABLE IF NOT EXISTS urls(code text, redirect text, owner text, mail text, created int, expire boolean, timer int, open boolean, security boolean, pwhash text)')
+cur.execute('CREATE TABLE IF NOT EXISTS user(account text, nickname text, pwhash text, created int, mail text, admin boolean, last int, skin text)')
+db.commit()
+
+
+#   return json.dumps(data, ensure_ascii=False).encode().decode('utf8')
+@app.route('/가/<code>', methods=['GET'])
+def go(code):
+    return "Work In Progress.."
+
+
+
+@app.route('/가입', methods=['GET', 'POST'])
+def register():
+    if request.method == 'POST':
+        account = request.form.get('id',None)
+        password = request.form.get('password',None)
+        nickname = request.form.get('nickname',account)
+        if not nickname: nickname = account
+        mail = request.form.get('mail',None)
+
+
+        if not account or account == '':
+            return render_template('register.html', error=error.register('empty_id'), a=None, b=password, c=nickname, d=mail)
+        elif not func.id_vaild(account):
+            return render_template('register.html', error=error.register('invaild_id'), a=None, b=password, c=nickname, d=mail)
+
+        if not password or password == '':
+            return render_template('register.html', error=error.register('empty_pw'), a=account, b=None, c=nickname, d=mail)
+
+        if not func.vaild(nickname):
+            return render_template('register.html', error=error.register('invaild_nick'), a=account, b=password, c=None, d=mail)
+
+        if mail:
+            if not func.mail_vaild(mail):
+                return render_template('register.html', error=error.register('invaild_mail'), a=account, b=password, c=nickname, d=None)
+
+        res = func.register(account,password,nickname,mail)
+        if not res:
+            return render_template('register.html', error=error.register('exists'), a=account, b=password, c=nickname, d=mail)
+        else:
+            return render_template('registered.html', a=account, b=password, c=nickname, d=mail)
+    return render_template('register.html', error=None)
+
+
+
+@app.route('/로그인', methods=['GET', 'POST'])
+def login():
+    return "Work In Progress.."
+
+
+
+@app.route('/로그아웃', methods=['GET'])
+def logout():
+    return "Work In Progress.."
+
+
+
+@app.route('/검색', methods=['GET'])
+def search():
+    return "Work In Progress.."
+
+
+
+@app.route('/목록', methods=['GET'])
+def urlist():
+    return "Work In Progress.."
+
+
+
+@app.route('/등록', methods=['GET', 'POST'])
+def add_url():
+    return "Work In Progress.."
+
+
+
+@app.route('/관리', methods=['GET', 'POST'])
+def manage():
+    return "Work In Progress.."
+
+
+
+@app.route('/관리자', methods=['GET', 'POST'])
+def admin():
+    return "Work In Progress.."
+
+
+
+@app.route('/정보', methods=['GET'])
+def info():
+    return "Work In Progress.."
+
+
+
+@app.route('/설정', methods=['GET'])
+def setting():
+    return "Work In Progress.."
+
+
+
+@app.route('/', methods=['GET'])
+def main():
+    return "Work In Progress.."
+
+
+
+
+
+@app.route('/file/<path:ldir>', methods=['GET'])
+def load(ldir):
+    ldir=re.sub('.*/\.\.(?P<dir>.*)','\g<dir>',ldir)
+    t=ldir if re.match('(.*/)?.*\..*',ldir) else ldir+'index.html' if ldir.endswith('/') else ldir+'/index.html'
+    t='file/'+ldir[2 if ldir.startswith('./') else 1 if ldir.startswith('/') else 0:]
+    return send_file(t,'text/css' if t.endswith('.css') else magic.Magic(mime=True).from_file(t))
+
+@app.route('/img/<path:ldir>', methods=['GET'])
+def img(ldir):
+    ldir=re.sub('.*/\.\.(?P<dir>.*)','\g<dir>',ldir)
+    t=ldir if re.match('(.*/)?.*\..*',ldir) else ldir+'index.html' if ldir.endswith('/') else ldir+'/index.html'
+    t='img/'+ldir[2 if ldir.startswith('./') else 1 if ldir.startswith('/') else 0:]
+    return send_file(t,'text/css' if t.endswith('.css') else magic.Magic(mime=True).from_file(t))
+
+
+
+app.run(host='114.204.175.211',port=4096);
