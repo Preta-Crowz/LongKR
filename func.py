@@ -63,6 +63,7 @@ def get_user(account):
     dat['mail'] = info[4]
     dat['admin'] = info[5]
     dat['last_login'] = info[6]
+    dat['skin'] = info[7]
     return dat
 
 
