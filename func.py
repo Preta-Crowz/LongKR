@@ -100,3 +100,18 @@ def code_vaild(test):
 def vaild(test):
     try: return re.match(r'^[^;]+$',test)[0] == test
     except: return False
+
+
+
+def get_skins():
+    f = os.listdir("file")
+    f.remove("index.txt")
+    i = os.listdir("img")
+    i.remove("index.txt")
+    t = os.listdir("templates")
+    t.remove("index.txt")
+    fit = f+i+t
+    skins = set()
+    for item in set(fit):
+        if fit.count(item) == 3: skins.add(item)
+    return list(skins)
