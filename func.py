@@ -68,11 +68,35 @@ def get_user(account):
 
 
 
+def check_url(code):
+    if not code_vaild(code): return False
+    db = sqlite3.connect(f'{config["DB_NAME"]}.db')
+    cur = db.cursor()
+    cur.execute("SELECT * FROM urls WHERE code=\"{}\"".format(code))
+    return cur.fetchall() != []
+
+
+
+def get_url(code):
+    db = sqlite3.connect(f'{config["DB_NAME"]}.db')
+    cur = db.cursor()
+    cur.execute("SELECT redirect FROM urls WHERE code=\"{}\"".format(code))
+    return cur.fetchall()[0]
+
+
+
 def id_vaild(test):
-    return re.match(r'^[A-Za-z0-9\-\_]+$',test)[0] == test
+    try: return re.match(r'^[A-Za-z0-9\-\_]+$',test)[0] == test
+    except: return False
 
 def mail_vaild(test):
-    return re.match(r'^[^;]+\@[^;]+(\.[^;]+)+$',test) != None
+    try: return re.match(r'^[^;]+\@[^;]+(\.[^;]+)+$',test) != None
+    except: return False
+
+def code_vaild(test):
+    try: return re.match(r'^[가-힣\-\_]+$',test)[0] == test
+    except: return False
 
 def vaild(test):
-    return re.match(r'^[^;]+$',test)[0] == test
+    try: return re.match(r'^[^;]+$',test)[0] == test
+    except: return False

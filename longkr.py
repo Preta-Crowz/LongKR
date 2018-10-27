@@ -31,7 +31,10 @@ db.commit()
 @app.route('/가/<code>', methods=['GET'])
 def go(code):
     set_session()
-    return "Work In Progress.."
+    if func.check_url(code):
+        return redirect(func.get_url(code))
+    else:
+        return render_template((session['skin'] if session['logged'] else config['DEF_SKIN'])+'/red_error.html')
 
 
 
