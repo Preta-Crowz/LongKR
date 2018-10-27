@@ -112,14 +112,14 @@ def logout():
 
 
 
-@app.route('/검색', methods=['GET'])
+@app.route('/검색', methods=['GET', 'POST'])
 def search():
     set_session()
     return "Work In Progress.."
 
 
 
-@app.route('/목록', methods=['GET'])
+@app.route('/목록', methods=['GET', 'POST'])
 def urlist():
     set_session()
     return "Work In Progress.."
@@ -147,14 +147,14 @@ def admin():
 
 
 
-@app.route('/정보', methods=['GET'])
+@app.route('/정보', methods=['GET', 'POST'])
 def info():
     set_session()
     return "Work In Progress.."
 
 
 
-@app.route('/설정', methods=['GET'])
+@app.route('/설정', methods=['GET', 'POST'])
 def setting():
     set_session()
     return "Work In Progress.."
