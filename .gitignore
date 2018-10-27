@@ -1,6 +1,6 @@
 __pycache__
 *.db
 config.json
-file
-img
-templates
+file/*
+img/*
+templates/*
