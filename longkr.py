@@ -195,4 +195,4 @@ def img(ldir):
 def set_session():
     if not 'logged' in session: session['logged'] = False
 
-app.run(host='114.204.175.211',port=4096);
+app.run(host=config['HOST'],port=config['PORT']);
