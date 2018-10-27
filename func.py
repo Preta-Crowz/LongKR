@@ -81,7 +81,7 @@ def get_url(code):
     db = sqlite3.connect(f'{config["DB_NAME"]}.db')
     cur = db.cursor()
     cur.execute("SELECT redirect FROM urls WHERE code=\"{}\"".format(code))
-    return cur.fetchall()[0]
+    return cur.fetchall()[0][0]
 
 
 
