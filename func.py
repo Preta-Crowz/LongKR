@@ -31,6 +31,42 @@ def register(account,password,nickname,mail):
 
 
 
+def login(account,password):
+    db = sqlite3.connect(f'{config["DB_NAME"]}.db')
+    cur = db.cursor()
+    cur.execute("SELECT * FROM user WHERE account=\"{}\"".format(account))
+    info = cur.fetchall()
+    if info == []:
+        return False
+    hashed = info[0][2]
+    if bcrypt.checkpw(password.encode(), hashed.encode()):
+        now = time.time()
+        cur.execute('UPDATE user SET last=(?) WHERE account=(?)',(now,account))
+        db.commit()
+        return True
+    return False
+
+
+
+def get_user(account):
+    db = sqlite3.connect(f'{config["DB_NAME"]}.db')
+    cur = db.cursor()
+    cur.execute("SELECT * FROM user WHERE account=\"{}\"".format(account))
+    info = cur.fetchall()
+    if info == []:
+        return {}
+    info = info[0]
+    dat = {}
+    dat['account'] = info[0]
+    dat['username'] = info[1]
+    dat['created'] = info[3]
+    dat['mail'] = info[4]
+    dat['admin'] = info[5]
+    dat['last_login'] = info[6]
+    return dat
+
+
+
 def id_vaild(test):
     return re.match(r'^[A-Za-z0-9\-\_]+$',test)[0] == test
 

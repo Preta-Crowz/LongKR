@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from flask import Flask,render_template,request,send_file,redirect,session
+from flask import Flask,render_template,request,send_file,redirect,session,url_for
 from winmagic import magic
 import time
 import json
@@ -10,10 +10,13 @@ import socket
 import threading
 import urllib3
 import sqlite3
+import os
+
 import func
 import error
 config = json.load(open("config.json"))
 app = Flask(__name__)
+app.secret_key = os.urandom(16)
 
 
 db = sqlite3.connect(f'{config["DB_NAME"]}.db')
@@ -42,38 +45,62 @@ def register():
 
 
         if not account or account == '':
-            return render_template('register.html', error=error.register('empty_id'), a=None, b=password, c=nickname, d=mail)
+            return render_template('register.html', error=error.register('empty_id'), i=None, p=password, n=nickname, m=mail)
         elif not func.id_vaild(account):
-            return render_template('register.html', error=error.register('invaild_id'), a=None, b=password, c=nickname, d=mail)
+            return render_template('register.html', error=error.register('invaild_id'), i=None, p=password, n=nickname, m=mail)
 
         if not password or password == '':
-            return render_template('register.html', error=error.register('empty_pw'), a=account, b=None, c=nickname, d=mail)
+            return render_template('register.html', error=error.register('empty_pw'), i=account, p=None, n=nickname, m=mail)
 
         if not func.vaild(nickname):
-            return render_template('register.html', error=error.register('invaild_nick'), a=account, b=password, c=None, d=mail)
+            return render_template('register.html', error=error.register('invaild_nick'), i=account, p=password, n=None, m=mail)
 
         if mail:
             if not func.mail_vaild(mail):
-                return render_template('register.html', error=error.register('invaild_mail'), a=account, b=password, c=nickname, d=None)
+                return render_template('register.html', error=error.register('invaild_mail'), i=account, p=password, n=nickname, m=None)
 
         res = func.register(account,password,nickname,mail)
         if not res:
-            return render_template('register.html', error=error.register('exists'), a=account, b=password, c=nickname, d=mail)
+            return render_template('register.html', error=error.register('exists'), i=account, p=password, n=nickname, m=mail)
         else:
-            return render_template('registered.html', a=account, b=password, c=nickname, d=mail)
+            return render_template('registered.html', i=account, p=password, n=nickname, m=mail)
     return render_template('register.html', error=None)
 
 
 
 @app.route('/로그인', methods=['GET', 'POST'])
 def login():
-    return "Work In Progress.."
+    if request.method == 'POST':
+        account = request.form.get('id',None)
+        password = request.form.get('password',None)
+
+
+
+        if not account or account == '':
+            return render_template('login.html', error=error.login('empty_id'), i=None, p=password)
+
+        if not password or password == '':
+            return render_template('login.html', error=error.login('empty_pw'), i=account, p=None)
+
+
+
+        res = func.login(account,password)
+        if not res:
+            return render_template('login.html', error=error.login('failed'), i=account, p=password)
+        else:
+            session['logged'] = True
+            session['account'] = account
+            session['username'] = func.get_user(account)['username']
+            return redirect(url_for('main'))
+    return render_template('login.html', error=None)
 
 
 
 @app.route('/로그아웃', methods=['GET'])
 def logout():
-    return "Work In Progress.."
+    session['logged'] = False
+    session.pop('account', None)
+    return redirect(url_for('main'))
 
 
 
@@ -121,6 +148,9 @@ def setting():
 
 @app.route('/', methods=['GET'])
 def main():
+    today = datetime.date.today()
+    if today.month == 4 and today.day == 1:
+        return '<script type="text/javascript">location.href="http://warning.or.kr/";</script>'
     return "Work In Progress.."
 
 
