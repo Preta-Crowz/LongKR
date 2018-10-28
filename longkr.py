@@ -34,7 +34,7 @@ def go(code):
     if func.check_url(code):
         return redirect(func.get_url(code))
     else:
-        return render_template((session['skin'] if session['logged'] else config['DEF_SKIN'])+'/red_error.html')
+        return render_template(skinned('/red_error.html'))
 
 
 
@@ -50,26 +50,26 @@ def register():
 
 
         if not account or account == '':
-            return render_template((session['skin'] if session['logged'] else config['DEF_SKIN'])+'/register.html', error=error.register('empty_id'), i=None, p=password, n=nickname, m=mail)
+            return render_template(skinned('/register.html'), error=error.register('empty_id'), i=None, p=password, n=nickname, m=mail)
         elif not func.id_vaild(account):
-            return render_template((session['skin'] if session['logged'] else config['DEF_SKIN'])+'/register.html', error=error.register('invaild_id'), i=None, p=password, n=nickname, m=mail)
+            return render_template(skinned('/register.html'), error=error.register('invaild_id'), i=None, p=password, n=nickname, m=mail)
 
         if not password or password == '':
-            return render_template((session['skin'] if session['logged'] else config['DEF_SKIN'])+'/register.html', error=error.register('empty_pw'), i=account, p=None, n=nickname, m=mail)
+            return render_template(skinned('/register.html'), error=error.register('empty_pw'), i=account, p=None, n=nickname, m=mail)
 
         if not func.vaild(nickname):
-            return render_template((session['skin'] if session['logged'] else config['DEF_SKIN'])+'/register.html', error=error.register('invaild_nick'), i=account, p=password, n=None, m=mail)
+            return render_template(skinned('/register.html'), error=error.register('invaild_nick'), i=account, p=password, n=None, m=mail)
 
         if mail:
             if not func.mail_vaild(mail):
-                return render_template((session['skin'] if session['logged'] else config['DEF_SKIN'])+'/register.html', error=error.register('invaild_mail'), i=account, p=password, n=nickname, m=None)
+                return render_template(skinned('/register.html'), error=error.register('invaild_mail'), i=account, p=password, n=nickname, m=None)
 
         res = func.register(account,password,nickname,mail)
         if not res:
-            return render_template((session['skin'] if session['logged'] else config['DEF_SKIN'])+'/register.html', error=error.register('exists'), i=account, p=password, n=nickname, m=mail)
+            return render_template(skinned('/register.html'), error=error.register('exists'), i=account, p=password, n=nickname, m=mail)
         else:
-            return render_template((session['skin'] if session['logged'] else config['DEF_SKIN'])+'/registered.html', i=account, p=password, n=nickname, m=mail)
-    return render_template((session['skin'] if session['logged'] else config['DEF_SKIN'])+'/register.html', error=None)
+            return render_template(skinned('/registered.html'), i=account, p=password, n=nickname, m=mail)
+    return render_template(skinned('/register.html'), error=None)
 
 
 
@@ -83,16 +83,16 @@ def login():
 
 
         if not account or account == '':
-            return render_template((session['skin'] if session['logged'] else config['DEF_SKIN'])+'/login.html', error=error.login('empty_id'), i=None, p=password)
+            return render_template(skinned('/login.html'), error=error.login('empty_id'), i=None, p=password)
 
         if not password or password == '':
-            return render_template((session['skin'] if session['logged'] else config['DEF_SKIN'])+'/login.html', error=error.login('empty_pw'), i=account, p=None)
+            return render_template(skinned('/login.html'), error=error.login('empty_pw'), i=account, p=None)
 
 
 
         res = func.login(account,password)
         if not res:
-            return render_template((session['skin'] if session['logged'] else config['DEF_SKIN'])+'/login.html', error=error.login('failed'), i=account, p=password)
+            return render_template(skinned('/login.html'), error=error.login('failed'), i=account, p=password)
         else:
             session['logged'] = True
             session['account'] = account
@@ -100,7 +100,7 @@ def login():
             session['username'] = usr['username']
             session['skin'] = usr['skin']
             return redirect(url_for('main'))
-    return render_template((session['skin'] if session['logged'] else config['DEF_SKIN'])+'/login.html', error=None)
+    return render_template(skinned('/login.html'), error=None)
 
 
 
@@ -170,7 +170,7 @@ def main():
     today = datetime.date.today()
     if today.month == 4 and today.day == 1:
         return '<script type="text/javascript">location.href="http://warning.or.kr/";</script>'
-    return "Work In Progress.."
+    return render_template(skinned('/main.html'))
 
 
 
@@ -190,9 +190,19 @@ def img(ldir):
     t='img/'+ldir[2 if ldir.startswith('./') else 1 if ldir.startswith('/') else 0:]
     return send_file(t,'text/css' if t.endswith('.css') else magic.Magic(mime=True).from_file(t))
 
+@app.route('/glob/<path:ldir>', methods=['GET'])
+def glob(ldir):
+    ldir=re.sub('.*/\.\.(?P<dir>.*)','\g<dir>',ldir)
+    t=ldir if re.match('(.*/)?.*\..*',ldir) else ldir+'index.html' if ldir.endswith('/') else ldir+'/index.html'
+    t='global/'+ldir[2 if ldir.startswith('./') else 1 if ldir.startswith('/') else 0:]
+    return send_file(t,'text/css' if t.endswith('.css') else magic.Magic(mime=True).from_file(t))
+
 
 
 def set_session():
     if not 'logged' in session: session['logged'] = False
+
+def skinned(template):
+    return (session['skin'] if session['logged'] else config['DEF_SKIN'])+template
 
 app.run(host=config['HOST'],port=config['PORT']);
