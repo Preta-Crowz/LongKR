@@ -10,7 +10,7 @@ def register(code):
     elif code == 'exists':       return "이미 존재하는 계정입니다."
     else: return "알 수 없는 오류가 발생했습니다."
 
-def login(code)
+def login(code):
     if code == 'default': return "DEFAULT_ERROR"
     elif code == 'empty_id':     return "아이디를 입력하세요."
     elif code == 'empty_pw':     return "비밀번호를 입력하세요."
