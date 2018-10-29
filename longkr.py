@@ -35,7 +35,7 @@ def go(code):
     if func.check_url(code):
         return redirect(func.get_url(code))
     else:
-        return render_template(skinned('/red_error.html'))
+        return skinned('/red_error.html')
 
 
 
@@ -51,26 +51,26 @@ def register():
 
 
         if not account or account == '':
-            return render_template(skinned('/register.html'), error=error.register('empty_id'), i=None, p=password, n=nickname, m=mail)
+            return skinned('/register.html', error=error.register('empty_id'), i=None, p=password, n=nickname, m=mail)
         elif not func.id_vaild(account):
-            return render_template(skinned('/register.html'), error=error.register('invaild_id'), i=None, p=password, n=nickname, m=mail)
+            return skinned('/register.html', error=error.register('invaild_id'), i=None, p=password, n=nickname, m=mail)
 
         if not password or password == '':
-            return render_template(skinned('/register.html'), error=error.register('empty_pw'), i=account, p=None, n=nickname, m=mail)
+            return skinned('/register.html', error=error.register('empty_pw'), i=account, p=None, n=nickname, m=mail)
 
         if not func.vaild(nickname):
-            return render_template(skinned('/register.html'), error=error.register('invaild_nick'), i=account, p=password, n=None, m=mail)
+            return skinned('/register.html', error=error.register('invaild_nick'), i=account, p=password, n=None, m=mail)
 
         if mail:
             if not func.mail_vaild(mail):
-                return render_template(skinned('/register.html'), error=error.register('invaild_mail'), i=account, p=password, n=nickname, m=None)
+                return skinned('/register.html', error=error.register('invaild_mail'), i=account, p=password, n=nickname, m=None)
 
         res = func.register(account,password,nickname,mail)
         if not res:
-            return render_template(skinned('/register.html'), error=error.register('exists'), i=account, p=password, n=nickname, m=mail)
+            return skinned('/register.html', error=error.register('exists'), i=account, p=password, n=nickname, m=mail)
         else:
-            return render_template(skinned('/registered.html'), i=account, p=password, n=nickname, m=mail)
-    return render_template(skinned('/register.html'), error=None)
+            return skinned('/registered.html', i=account, p=password, n=nickname, m=mail)
+    return skinned('/register.html', error=None)
 
 
 
@@ -84,16 +84,16 @@ def login():
 
 
         if not account or account == '':
-            return render_template(skinned('/login.html'), error=error.login('empty_id'), i=None, p=password)
+            return skinned('/login.html', error=error.login('empty_id'), i=None, p=password)
 
         if not password or password == '':
-            return render_template(skinned('/login.html'), error=error.login('empty_pw'), i=account, p=None)
+            return skinned('/login.html', error=error.login('empty_pw'), i=account, p=None)
 
 
 
         res = func.login(account,password)
         if not res:
-            return render_template(skinned('/login.html'), error=error.login('failed'), i=account, p=password)
+            return skinned('/login.html', error=error.login('failed'), i=account, p=password)
         else:
             session['logged'] = True
             session['account'] = account
@@ -102,7 +102,7 @@ def login():
             session['skin'] = usr['skin']
             session['admin'] = usr['admin']
             return redirect(url_for('main'))
-    return render_template(skinned('/login.html'), error=None)
+    return skinned('/login.html', error=None)
 
 
 
@@ -154,7 +154,7 @@ def manage():
 
 @app.route('/관리자', methods=['GET', 'POST'])
 def admin():
-    if not session['admin']: return render_template(skinned('/denied.html'))
+    if not session['admin']: return skinned('/denied.html')
     set_session()
     return "Work In Progress.."
 
@@ -169,7 +169,7 @@ def info():
 
 @app.route('/설정', methods=['GET', 'POST'])
 def setting():
-    if not session['admin']: return render_template(skinned('/denied.html'))
+    if not session['admin']: return skinned('/denied.html')
     set_session()
     return "Work In Progress.."
 
@@ -181,7 +181,7 @@ def main():
     today = datetime.date.today()
     if today.month == 4 and today.day == 1:
         return '<script type="text/javascript">location.href="http://warning.or.kr/";</script>'
-    return render_template(skinned('/main.html'))
+    return skinned('/main.html')
 
 
 
@@ -216,7 +216,7 @@ def set_session():
     if not 'logged' in session: session['logged'] = False
     if not 'admin' in session: session['admin'] = False
 
-def skinned(template):
-    return (session['skin'] if session['logged'] else config['DEF_SKIN'])+template
+def skinned(template,**k):
+    return render_template((session['skin'] if session['logged'] else config['DEF_SKIN'])+template,**k)
 
 app.run(host=config['HOST'],port=config['PORT']);
