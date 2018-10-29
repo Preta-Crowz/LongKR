@@ -11,6 +11,7 @@ import threading
 import urllib3
 import sqlite3
 import os
+import datetime
 
 import func
 import error
@@ -122,6 +123,13 @@ def search():
 
 
 
+@app.route('/단축', methods=['GET', 'POST'])
+def short():
+    set_session()
+    return "Work In Progress.."
+
+
+
 @app.route('/목록', methods=['GET', 'POST'])
 def urlist():
     set_session()
@@ -176,28 +184,24 @@ def main():
 
 
 
-@app.route('/file/<path:ldir>', methods=['GET'])
-def load(ldir):
-    ldir=re.sub('.*/\.\.(?P<dir>.*)','\g<dir>',ldir)
-    t=ldir if re.match('(.*/)?.*\..*',ldir) else ldir+'index.html' if ldir.endswith('/') else ldir+'/index.html'
-    t='file/'+ldir[2 if ldir.startswith('./') else 1 if ldir.startswith('/') else 0:]
+@app.route('/file/<path:sdir>', methods=['GET'])
+def load(sdir):
+    return file('file',sdir)
+
+@app.route('/img/<path:sdir>', methods=['GET'])
+def img(sdir):
+    return file('img',sdir)
+
+@app.route('/glob/<path:sdir>', methods=['GET'])
+def glob(sdir):
+    return file('global',sdir)
+
+
+def file(mdir,sdir):
+    sdir=re.sub('.*/\.\.(?P<dir>.*)','\g<dir>',sdir)
+    t=sdir if re.match('(.*/)?.*\..*',sdir) else sdir+'index.html' if sdir.endswith('/') else sdir+'/index.html'
+    t=mdir+'/'+sdir[2 if sdir.startswith('./') else 1 if sdir.startswith('/') else 0:]
     return send_file(t,'text/css' if t.endswith('.css') else magic.Magic(mime=True).from_file(t))
-
-@app.route('/img/<path:ldir>', methods=['GET'])
-def img(ldir):
-    ldir=re.sub('.*/\.\.(?P<dir>.*)','\g<dir>',ldir)
-    t=ldir if re.match('(.*/)?.*\..*',ldir) else ldir+'index.html' if ldir.endswith('/') else ldir+'/index.html'
-    t='img/'+ldir[2 if ldir.startswith('./') else 1 if ldir.startswith('/') else 0:]
-    return send_file(t,'text/css' if t.endswith('.css') else magic.Magic(mime=True).from_file(t))
-
-@app.route('/glob/<path:ldir>', methods=['GET'])
-def glob(ldir):
-    ldir=re.sub('.*/\.\.(?P<dir>.*)','\g<dir>',ldir)
-    t=ldir if re.match('(.*/)?.*\..*',ldir) else ldir+'index.html' if ldir.endswith('/') else ldir+'/index.html'
-    t='global/'+ldir[2 if ldir.startswith('./') else 1 if ldir.startswith('/') else 0:]
-    return send_file(t,'text/css' if t.endswith('.css') else magic.Magic(mime=True).from_file(t))
-
-
 
 def set_session():
     if not 'logged' in session: session['logged'] = False
