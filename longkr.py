@@ -153,6 +153,7 @@ def manage():
 
 @app.route('/관리자', methods=['GET', 'POST'])
 def admin():
+    if not session['admin']: return render_template(skinned('/denied.html'))
     set_session()
     return "Work In Progress.."
 
@@ -167,6 +168,7 @@ def info():
 
 @app.route('/설정', methods=['GET', 'POST'])
 def setting():
+    if not session['admin']: return render_template(skinned('/denied.html'))
     set_session()
     return "Work In Progress.."
 
@@ -205,6 +207,7 @@ def file(mdir,sdir):
 
 def set_session():
     if not 'logged' in session: session['logged'] = False
+    if not 'admin' in session: session['admin'] = False
 
 def skinned(template):
     return (session['skin'] if session['logged'] else config['DEF_SKIN'])+template
