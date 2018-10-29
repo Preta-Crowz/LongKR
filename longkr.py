@@ -100,6 +100,7 @@ def login():
             usr = func.get_user(account)
             session['username'] = usr['username']
             session['skin'] = usr['skin']
+            session['admin'] = usr['admin']
             return redirect(url_for('main'))
     return render_template(skinned('/login.html'), error=None)
 
