@@ -189,14 +189,20 @@ def main():
 
 @app.route('/file/<path:sdir>', methods=['GET'])
 def load(sdir):
+    if sdir == '':
+        return redirect(url_for('main'))
     return file('file',sdir)
 
 @app.route('/img/<path:sdir>', methods=['GET'])
 def img(sdir):
+    if sdir == '':
+        return redirect(url_for('main'))
     return file('img',sdir)
 
 @app.route('/glob/<path:sdir>', methods=['GET'])
 def glob(sdir):
+    if sdir == '':
+        return redirect(url_for('main'))
     return file('global',sdir)
 
 
