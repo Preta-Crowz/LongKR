@@ -4,3 +4,4 @@ config.json
 file/*
 img/*
 templates/*
+global/*
