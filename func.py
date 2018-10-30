@@ -7,6 +7,7 @@ import time
 import re
 import sqlite3
 import json
+import random
 config = json.load(open("config.json"))
 
 def get_random(length):
@@ -115,3 +116,17 @@ def get_skins():
     for item in set(fit):
         if fit.count(item) == 3: skins.add(item)
     return list(skins)
+
+
+
+def randkr(length=1):
+    try:
+        length = int(length)
+    except ValueError:
+        raise TypeError("length need int")
+    if length < 1:
+        raise ValueError("length is smaller than 1")
+    r = ""
+    for i in range(length):
+        r += chr(random.randint(44032,55203))
+    return r
