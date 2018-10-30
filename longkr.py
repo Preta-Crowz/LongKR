@@ -120,7 +120,7 @@ def logout():
 @app.route('/검색', methods=['GET', 'POST'])
 def search():
     set_session()
-    return "Work In Progress.."
+    return skinned('/search.html', q=None)
 
 
 
