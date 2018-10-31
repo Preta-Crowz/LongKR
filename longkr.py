@@ -215,6 +215,7 @@ def file(mdir,sdir):
 def set_session():
     if not 'logged' in session: session['logged'] = False
     if not 'admin' in session: session['admin'] = False
+    return True
 
 def skinned(template,**k):
     return render_template((session['skin'] if session['logged'] else config['DEF_SKIN'])+template,**k)
