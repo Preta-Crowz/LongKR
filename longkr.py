@@ -207,10 +207,30 @@ def glob(sdir):
 
 
 def file(mdir,sdir):
-    sdir=re.sub('.*/\.\.(?P<dir>.*)','\g<dir>',sdir)
-    t=sdir if re.match('(.*/)?.*\..*',sdir) else sdir+'index.html' if sdir.endswith('/') else sdir+'/index.html'
-    t=mdir+'/'+sdir[2 if sdir.startswith('./') else 1 if sdir.startswith('/') else 0:]
-    return send_file(t,'text/css' if t.endswith('.css') else magic.Magic(mime=True).from_file(t))
+    sdir = re.sub('.*/\.\.(?P<dir>.*)','\g<dir>',sdir)
+
+    if re.match('(.*/)?.*\..*',sdir):
+        pass
+    elif sdir.endswith('/'):
+        sdir = sdir + 'index.html'
+    else:
+        sdir = sdir + '/index.html'
+
+    if sdir.startswith('./'):
+        index = 2
+    elif sdir.startswith('/'):
+        index = 1
+    else:
+        index = 0
+
+    fdir = mdir + '/' + sdir[index]
+
+    if fdir.endswith('.css'):
+        mime = 'text/css'
+    else:
+        mime = magic.Magic(mime=True).from_file(fdir)
+        
+    return send_file(fdir,mime)
 
 def set_session():
     if not 'logged' in session: session['logged'] = False
