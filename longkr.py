@@ -209,13 +209,6 @@ def glob(sdir):
 def file(mdir,sdir):
     sdir = re.sub('.*/\.\.(?P<dir>.*)','\g<dir>',sdir)
 
-    if re.match('(.*/)?.*\..*',sdir):
-        pass
-    elif sdir.endswith('/'):
-        sdir = sdir + 'index.html'
-    else:
-        sdir = sdir + '/index.html'
-
     if sdir.startswith('./'):
         index = 2
     elif sdir.startswith('/'):
