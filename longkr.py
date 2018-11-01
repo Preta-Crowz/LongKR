@@ -223,13 +223,13 @@ def file(mdir,sdir):
     else:
         index = 0
 
-    fdir = mdir + '/' + sdir[index]
+    fdir = mdir + '/' + sdir[index:]
 
     if fdir.endswith('.css'):
         mime = 'text/css'
     else:
         mime = magic.Magic(mime=True).from_file(fdir)
-        
+
     return send_file(fdir,mime)
 
 def set_session():
