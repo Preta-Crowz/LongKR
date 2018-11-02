@@ -231,6 +231,10 @@ def set_session():
     return True
 
 def skinned(template,**k):
-    return render_template((session['skin'] if session['logged'] else config['DEF_SKIN'])+template,**k)
+    if not session['logged'] or session['skin'] == "DEFAULT":
+        skin = config['DEF_SKIN']
+    else:
+        skin = session['skin']
+    return render_template(skin + template,**k)
 
 app.run(host=config['HOST'],port=config['PORT']);

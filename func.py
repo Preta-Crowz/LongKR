@@ -25,7 +25,7 @@ def register(account,password,nickname,mail):
     if nickname is None: nickname = account
     pwhash = bcrypt.hashpw(password.encode(),bcrypt.gensalt()).decode()
     now = time.time()
-    dat = (account,nickname,pwhash,now,mail,False,now,config['DEF_SKIN'])
+    dat = (account,nickname,pwhash,now,mail,False,now,"DEFAULT")
     cur.execute('INSERT INTO user VALUES(?, ?, ?, ?, ?, ?, ?, ?)',dat)
     db.commit()
     return True
