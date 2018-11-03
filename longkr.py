@@ -1,9 +1,14 @@
 # -*- coding: utf-8 -*-
+import json
+config = json.load(open("config.json"))
+
+import zerologger as zlog
+logger = zlog.Logger(config["RAVEN"]["KEY"],config["RAVEN"]["SECRET"],config["RAVEN"]["PROJECT"],config["APPNAME"],config["LOG"])
 
 from flask import Flask,render_template,request,send_file,redirect,session,url_for
 from winmagic import magic
 import time
-import json
+
 import re
 import requests
 import socket
@@ -14,13 +19,11 @@ import os
 import datetime
 
 import logging
-log = logging.getLogger('werkzeug')
-log.setLevel(0)
+logging.getLogger('werkzeug').setLevel(0)
 
 import func
 import error
-config = json.load(open("config.json"))
-app = Flask(__name__)
+app = Flask(config["APPNAME"])
 app.secret_key = os.urandom(16)
 
 

@@ -32,26 +32,28 @@ def test_raven():
 
 
 
-def set_reven(self,key,secret,project):
+def set_raven(key,secret,project):
     global client
     client = raven.Client('https://{}:{}@sentry.io/{}'.format(key,secret,project))
 
 
 
 class Logger:
-    def __init__(self,key,secret,project=__name__,level=0):
+    def __init__(self,key,secret,project,name=__name__,level=0):
         global client
         set_raven(key,secret,project)
+        self._raven = client
         self._logger = logging.Logger(project)
         now = str(datetime.datetime.now())
         date = now[2:10].replace('-','')
         time = now[11:19].replace(':','')
         now = date+'_'+time
-        file = logging.FileHandler('log/{}_{}.log'.format(now,project),level=lvl)
-        stream = logging.StreamHandler(level=lvl)
+        file = logging.FileHandler('log/{}_{}.log'.format(now,project))
+        file.setLevel(level)
+        stream = logging.StreamHandler()
+        stream.setLevel(level)
         self._logger.addHandler(file)
         self._logger.addHandler(stream)
-        self._raven = client
 
     def debug(self,msg,*args,**kwargs):
         self._logger.debug(msg,*args,**kwargs)
