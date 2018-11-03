@@ -43,7 +43,7 @@ class Logger:
         global client
         set_raven(key,secret,project)
         self._logger = logging.Logger(project)
-        now = datetime.datetime.now()
+        now = str(datetime.datetime.now())
         date = now[2:10].replace('-','')
         time = now[11:19].replace(':','')
         now = date+'_'+time
