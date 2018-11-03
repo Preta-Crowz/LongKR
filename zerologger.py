@@ -48,33 +48,30 @@ class Logger:
         date = now[2:10].replace('-','')
         time = now[11:19].replace(':','')
         now = date+'_'+time
+        fmt = '[%(levelname)s|%(filename)s] %(funcName)s@%(asctime)s > %(message)s'
+        tfm = '%H:%M:%S'
+        formatter = logging.Formatter(fmt=fmt,datefmt=tfm)
         file = logging.FileHandler('log/{}_{}.log'.format(now,project))
         file.setLevel(level)
+        file.setFormatter(formatter)
         stream = logging.StreamHandler()
         stream.setLevel(level)
+        stream.setFormatter(formatter)
         self._logger.addHandler(file)
         self._logger.addHandler(stream)
+        self.debug = self._logger.debug
+        self.info = self._logger.info
+        self.warning = self._logger.warning
+        self.log = self._logger.log
+        self.error = self._logger.error
 
-    def debug(self,msg,*args,**kwargs):
-        self._logger.debug(msg,*args,**kwargs)
-
-    def info(self,msg,*args,**kwargs):
-        self._logger.info(msg,*args,**kwargs)
-
-    def warning(self,msg,*args,**kwargs):
-        self._logger.warning(msg,*args,**kwargs)
-
-    def error(self,msg,*args,**kwargs):
-        self._logger.error(msg,*args,**kwargs)
-
-    def exception(self,msg,*args,**kwargs):
-        self._logger.exception(msg,*args,**kwargs)
-
-    def critical(self,msg,*args,**kwargs):
-        self._logger.critical(msg,*args,**kwargs)
-
-    def log(self,lvl,msg,*args,**kwargs):
-        self._logger.log(lvl,msg,*args,**kwargs)
+    def exception(self,msg,*args,**kargs):
+        self._raven.captureException()
+        self._logger.exception(msg,*args,**kargs)
+        
+    def critical(self,msg,*args,**kargs):
+        self._raven.captureException()
+        self._logger.critical(msg,*args,**kargs)
 
 
 

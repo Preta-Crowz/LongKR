@@ -4,27 +4,44 @@ config = json.load(open("config.json"))
 
 import zerologger as zlog
 logger = zlog.Logger(config["RAVEN"]["KEY"],config["RAVEN"]["SECRET"],config["RAVEN"]["PROJECT"],config["APPNAME"],config["LOG"])
+logger.info("Start logging")
 
 from flask import Flask,render_template,request,send_file,redirect,session,url_for
+logger.debug("flask imported")
 from winmagic import magic
+logger.debug("magic imported")
 import time
+logger.debug("time imported")
 
 import re
+logger.debug("re imported")
 import requests
+logger.debug("requests imported")
 import socket
+logger.debug("socket imported")
 import threading
+logger.debug("threading imported")
 import urllib3
+logger.debug("urllib3 imported")
 import sqlite3
+logger.debug("sqlite3 imported")
 import os
+logger.debug("os imported")
 import datetime
-
-import logging
-logging.getLogger('werkzeug').setLevel(0)
+logger.debug("datetime imported")
 
 import func
 import error
+logger.debug("Submodules imported")
+
+logger.info("Setting up application")
 app = Flask(config["APPNAME"])
 app.secret_key = os.urandom(16)
+logger.debug("Current secret key is {}".format(app.secret_key))
+
+import logging
+logging.getLogger('werkzeug').setLevel(-100)
+logger.debug("Flask logging disabled")
 
 
 db = sqlite3.connect(f'{config["DB_NAME"]}.db')
@@ -244,4 +261,12 @@ def skinned(template,**k):
         skin = session['skin']
     return render_template(skin + template,**k)
 
-app.run(host=config['HOST'],port=config['PORT']);
+def loop():
+    logger.info("Starting up..")
+    try:
+        app.run(host=config['HOST'],port=config['PORT']);
+    except:
+        logger.exception("Server crashed!")
+        logger.info("Restarting server..")
+        loop()
+loop()
