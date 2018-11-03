@@ -13,6 +13,10 @@ import sqlite3
 import os
 import datetime
 
+import logging
+log = logging.getLogger('werkzeug')
+log.setLevel(0)
+
 import func
 import error
 config = json.load(open("config.json"))
