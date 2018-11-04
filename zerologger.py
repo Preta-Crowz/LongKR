@@ -46,12 +46,12 @@ class Logger:
         self._logger = logging.Logger(project)
         now = str(datetime.datetime.now())
         date = now[2:10].replace('-','')
-        time = now[11:19].replace(':','')
+        time = now[11:17].replace(':','')
         now = date+'_'+time
         fmt = '[%(levelname)s|%(filename)s] %(funcName)s@%(asctime)s > %(message)s'
         tfm = '%H:%M:%S'
         formatter = logging.Formatter(fmt=fmt,datefmt=tfm)
-        file = logging.FileHandler('log/{}_{}.log'.format(now,project))
+        file = logging.FileHandler('log/{}_{}.log'.format(name,now))
         file.setLevel(level)
         file.setFormatter(formatter)
         stream = logging.StreamHandler()
@@ -64,11 +64,12 @@ class Logger:
         self.warning = self._logger.warning
         self.log = self._logger.log
         self.error = self._logger.error
+        self.info('Logger started')
 
     def exception(self,msg,*args,**kargs):
         self._raven.captureException()
         self._logger.exception(msg,*args,**kargs)
-        
+
     def critical(self,msg,*args,**kargs):
         self._raven.captureException()
         self._logger.critical(msg,*args,**kargs)

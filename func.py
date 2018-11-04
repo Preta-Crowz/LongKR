@@ -1,14 +1,27 @@
 # -*- coding: utf-8 -*-
 
-import secrets
-import string
-import bcrypt
-import time
-import re
-import sqlite3
 import json
-import random
 config = json.load(open("config.json"))
+
+import zerologger as zlog
+logger = zlog.Logger(config["RAVEN"]["KEY"],config["RAVEN"]["SECRET"],config["RAVEN"]["PROJECT"],config["APPNAME"],config["LOG"])
+
+import secrets
+logger.debug("secrets imported")
+import string
+logger.debug("string imported")
+import bcrypt
+logger.debug("bcrypt imported")
+import time
+logger.debug("time imported")
+import re
+logger.debug("re imported")
+import sqlite3
+logger.debug("sqlite3 imported")
+import random
+logger.debug("random imported")
+
+
 
 def get_random(length):
     return ''.join(secrets.choice(string.ascii_uppercase + string.digits) for _ in range(length))
@@ -130,3 +143,7 @@ def randkr(length=1):
     for i in range(length):
         r += chr(random.randint(44032,55203))
     return r
+
+
+
+logger.info("Created all functions")

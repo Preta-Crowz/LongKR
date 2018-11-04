@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
+
 import json
 config = json.load(open("config.json"))
 
 import zerologger as zlog
 logger = zlog.Logger(config["RAVEN"]["KEY"],config["RAVEN"]["SECRET"],config["RAVEN"]["PROJECT"],config["APPNAME"],config["LOG"])
-logger.info("Start logging")
 
 from flask import Flask,render_template,request,send_file,redirect,session,url_for
 logger.debug("flask imported")
@@ -247,6 +247,11 @@ def file(mdir,sdir):
     else:
         mime = magic.Magic(mime=True).from_file(fdir)
 
+    if session['logged']:
+        user = session['username']
+    else:
+        user = ip()
+    logger.info("{} accessed {}".format(user,fdir))
     return send_file(fdir,mime)
 
 def set_session():
@@ -254,11 +259,31 @@ def set_session():
     if not 'admin' in session: session['admin'] = False
     return True
 
+def ip(): # Based on openNAMU ip_check
+    xff = ""
+    try:
+        temp = request.headers.getlist("X-Forwarded-For")[0]
+        temp = temp.split(":") [:-1]
+        for t in temp:
+            xff += ":" + t
+        xff = xff[1:]
+        ip = request.environ.get('HTTP_X_REAL_IP', xff)
+    except:
+        ip = request.environ.get('HTTP_X_REAL_IP', request.remote_addr)
+    # if str(ip) == str(request.environ.get('HTTP_X_REAL_IP', request.remote_addr)) or str(ip) == '::1':
+    #     ip = 'Reverse Proxy or Local'
+    return str(ip)
+
 def skinned(template,**k):
     if not session['logged'] or session['skin'] == "DEFAULT":
         skin = config['DEF_SKIN']
     else:
         skin = session['skin']
+    if session['logged']:
+        user = session['username']
+    else:
+        user = ip()
+    logger.info("{} accessed {} with {}".format(user,template,skin))
     return render_template(skin + template,**k)
 
 def loop():
