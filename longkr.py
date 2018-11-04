@@ -125,6 +125,7 @@ def login():
             session['username'] = usr['username']
             session['skin'] = usr['skin']
             session['admin'] = usr['admin']
+            logger.info("{} logged in site on {}".format(session['username'],ip()))
             return redirect(url_for('main'))
     return skinned('/login.html', error=None)
 
