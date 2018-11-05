@@ -285,7 +285,11 @@ def skinned(template,**k):
     else:
         user = ip()
     logger.info("{} accessed {} with {}".format(user,template,skin))
-    return render_template(skin + template,**k)
+    try:
+        rdat = render_template(skin + template,**k)
+    except:
+        rdat = redirect(url_for('main'))
+    return rdat
 
 def loop():
     logger.info("Starting up..")
