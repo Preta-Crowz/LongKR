@@ -242,6 +242,12 @@ def file(mdir,sdir):
         index = 0
 
     fdir = mdir + '/' + sdir[index:]
+    if mdir != 'global':
+        if not session['logged'] or session['skin'] == "DEFAULT":
+            skin = config['DEF_SKIN']
+        else:
+            skin = session['skin']
+        fdir = 'skins/' + skin + '/' + fdir
 
     if fdir.endswith('.css'):
         mime = 'text/css'
@@ -285,10 +291,11 @@ def skinned(template,**k):
     else:
         user = ip()
     logger.info("{} accessed {} with {}".format(user,template,skin))
-    try:
-        rdat = render_template(skin + template,**k)
-    except:
-        rdat = redirect(url_for('main'))
+    # try:
+    logger.debug(f'skins/{skin}/templates{template}')
+    rdat = render_template(f'skins/{skin}/templates{template}',**k)
+    # except:
+    #     rdat = redirect(url_for('main'))
     return rdat
 
 def loop():

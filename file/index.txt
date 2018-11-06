@@ -1,1 +1,0 @@
-* Insert Skin's CSS, JS, Other files on here.

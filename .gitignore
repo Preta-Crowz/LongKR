@@ -1,8 +1,6 @@
 __pycache__
 *.db
 config.json
-file/*
-img/*
-templates/*
+skins/KKUTU
 global/*
 log/*
