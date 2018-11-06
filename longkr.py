@@ -247,7 +247,7 @@ def file(mdir,sdir):
             skin = config['DEF_SKIN']
         else:
             skin = session['skin']
-        fdir = 'skins/' + skin + '/' + fdir
+        fdir = 'templates/' + skin + '/' + fdir
 
     if fdir.endswith('.css'):
         mime = 'text/css'
@@ -292,8 +292,7 @@ def skinned(template,**k):
         user = ip()
     logger.info("{} accessed {} with {}".format(user,template,skin))
     # try:
-    logger.debug(f'skins/{skin}/templates{template}')
-    rdat = render_template(f'skins/{skin}/templates{template}',**k)
+    rdat = render_template(f'{skin}/templates{template}',**k)
     # except:
     #     rdat = redirect(url_for('main'))
     return rdat
