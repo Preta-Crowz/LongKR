@@ -8,7 +8,10 @@ logger = zlog.Logger(config["RAVEN"]["KEY"],config["RAVEN"]["SECRET"],config["RA
 
 from flask import Flask,render_template,request,send_file,redirect,session,url_for
 logger.debug("flask imported")
-from winmagic import magic
+try:
+    from winmagic import magic
+except:
+    import magic
 logger.debug("magic imported")
 import time
 logger.debug("time imported")
