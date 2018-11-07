@@ -6,6 +6,17 @@ config = json.load(open("config.json"))
 import zerologger as zlog
 logger = zlog.Logger(config["RAVEN"]["KEY"],config["RAVEN"]["SECRET"],config["RAVEN"]["PROJECT"],config["APPNAME"],config["LOG"])
 
+import time
+logger.debug("time imported")
+import re
+logger.debug("re imported")
+import socket
+logger.debug("socket imported")
+import os
+logger.debug("os imported")
+import datetime
+logger.debug("datetime imported")
+
 from flask import Flask,render_template,request,send_file,redirect,session,url_for
 logger.debug("flask imported")
 try:
@@ -13,25 +24,12 @@ try:
 except:
     import magic
 logger.debug("magic imported")
-import time
-logger.debug("time imported")
-
-import re
-logger.debug("re imported")
 import requests
 logger.debug("requests imported")
-import socket
-logger.debug("socket imported")
-import threading
-logger.debug("threading imported")
 import urllib3
 logger.debug("urllib3 imported")
 import sqlite3
 logger.debug("sqlite3 imported")
-import os
-logger.debug("os imported")
-import datetime
-logger.debug("datetime imported")
 
 import func
 import error
