@@ -153,7 +153,8 @@ def search():
 @app.route('/단축', methods=['GET', 'POST'])
 def short():
     set_session()
-    return "Work In Progress.."
+    query = request.args.get('q', None)
+    return skinned('/shorter.html', error=None, q=query, s=None)
 
 
 
