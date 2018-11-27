@@ -161,6 +161,12 @@ def short():
 @app.route('/목록', methods=['GET', 'POST'])
 def urlist():
     set_session()
+    if not session['logged']: return redirect(url_for('unauthorize'))
+    page = request.args.get('p','1')
+    try: page = int(page)-1
+    except: page = 0
+    if page < 0: page = 0
+    user['urls'][amount*page:amount*page+amount]
     return "Work In Progress.."
 
 
